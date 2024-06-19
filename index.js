@@ -1,6 +1,8 @@
 // import * as Carousel from './Carousel.js';
 // import axios from 'axios';
 
+import { data } from "jquery";
+
 // The breed selection input element.
 const breedSelect = document.getElementById('breedSelect');
 // The information section div element.
@@ -9,9 +11,10 @@ const infoDump = document.getElementById('infoDump');
 const progressBar = document.getElementById('progressBar');
 // The get favourites button element.
 const getFavouritesBtn = document.getElementById('getFavouritesBtn');
+const carouselEls = document.querySelector(".carousel")
 
 // Step 0: Store your API key here for reference and easy access.
-// const API_KEY = 'live_H9wX1xIl5oQYP78fyi7nzYA645mqMRUWkBgFWdBbvoQxfS8SvYbbCxOKaEjQtPnP';
+const api_key = "live_H9wX1xIl5oQYP78fyi7nzYA645mqMRUWkBgFWdBbvoQxfS8SvYbbCxOKaEjQtPnP"
 
 /**
  * 1. Create an async function "initialLoad" that does the following:
@@ -21,76 +24,49 @@ const getFavouritesBtn = document.getElementById('getFavouritesBtn');
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-
-// async function initialLoad() {
-//   const response = await fetch("https://api.thecatapi.com/v1/breeds");
-//   const breedList = await response.json();
-//   // console.log(breedList)
-//   for (let i = 0; i < breedList.length; i++) {
-//     const breed = breedList[i];
-//     let option = document.createElement("option")
-//     if (!breed.image) continue
-
-//     option.value = i.id
-//     option.innerHTML(`${breed.name}`)
-//     breedSelect.appendChild(option)
-//     return option
-//   }
-// }
-// initialLoad()
-
 const url = `https://api.thecatapi.com/v1/breeds`;
-const api_key = "live_H9wX1xIl5oQYP78fyi7nzYA645mqMRUWkBgFWdBbvoQxfS8SvYbbCxOKaEjQtPnP"
-let storedBreeds = []
 
-fetch(url, {
-  headers: {
-    'x-api-key': api_key
-  }
-})
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {
+async function initialLoad() {
+  let storedBreeds = []
 
-    //filter to only include those with an `image` object
-    data = data.filter(img => img.image?.url != null)
-
-    storedBreeds = data;
-
-    for (let i = 0; i < storedBreeds.length; i++) {
-      const breed = storedBreeds[i];
-      let option = document.createElement('option');
-
-      //skip any breeds that don't have an image
-      if (!breed.image) continue
-
-      //use the current array index
-      option.value = breed.id;
-      option.innerHTML = `${breed.name}`;
-      breedSelect.appendChild(option);
-
+  fetch(url, {
+    headers: {
+      'x-api-key': api_key
     }
-    //show the first breed by default
-    //  showBreedImage(0)
   })
-  .catch(function (error) {
-    console.log(error);
-  });
-
-breedSelect.addEventListener("change", (e) => {
-  console.log(e.target.value)
-    fetch (`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${e.target.value}&api_key=${api_key}`)
-    .then((res) => {
-      return res.json()
+    .then((response) => {
+      return response.json();
     })
     .then((data) => {
-      console.log(data)
+
+      //filter to only include those with an `image` object
+      data = data.filter(img => img.image?.url != null)
+
+      storedBreeds = data;
+
+      for (let i = 0; i < storedBreeds.length; i++) {
+        const breed = storedBreeds[i];
+        let option = document.createElement('option');
+
+        //skip any breeds that don't have an image
+        if (!breed.image) continue
+
+        //use the current array index
+        option.value = breed.id;
+        option.innerHTML = `${breed.name}`;
+        breedSelect.appendChild(option);
+
+      }
+      //show the first breed by default
+      //  showBreedImage(0)
     })
-    .catch((error) => {
-      console.log(error)
-    })
-})
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+initialLoad()
+
+
 
 
 /**
@@ -100,13 +76,35 @@ breedSelect.addEventListener("change", (e) => {
  *  - Check the API documentation if you're only getting a single object.
  * - For each object in the response array, create a new element for the carousel.
  *  - Append each of these new elements to the carousel.
- * - Use the other data you have been given to create an informational section within the infoDump element.
+ * 
+ * - Use the other data you have been given to create an informational section within the infoDump element. // COME BACK TO FIGURE THIS OUT
+ * 
  *  - Be creative with how you create DOM elements and HTML.
  *  - Feel free to edit index.html and styles.css to suit your needs, but be careful!
  *  - Remember that functionality comes first, but user experience and design are important.
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
+breedSelect.addEventListener("change", (e) => {
+  // console.log(e.target.value)
+  fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${e.target.value}&api_key=${api_key}`)
+    .then((res) => {
+      return res.json()
+    })
+    .then((data) => {
+      // console.log(data)
+      for (let i = 0; i < data.length; i++) {
+        const newCarousEls = document.createElement("newCarousEl")
+        carouselEls.append(newCarousEls)
+      }
+      return data
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+})
+
+
 // async function breedInfo() {
 
 // }
