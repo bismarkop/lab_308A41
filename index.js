@@ -11,7 +11,9 @@ const infoDump = document.getElementById('infoDump');
 const progressBar = document.getElementById('progressBar');
 // The get favourites button element.
 const getFavouritesBtn = document.getElementById('getFavouritesBtn');
-const carouselEls = document.querySelector(".carousel")
+const carouselEls = document.getElementById("carouselInner")
+
+
 
 // Step 0: Store your API key here for reference and easy access.
 const api_key = "live_H9wX1xIl5oQYP78fyi7nzYA645mqMRUWkBgFWdBbvoQxfS8SvYbbCxOKaEjQtPnP"
@@ -58,15 +60,18 @@ async function initialLoad() {
 
       }
       //show the first breed by default
-      //  showBreedImage(0)
+       showBreedImage(0)
     })
     .catch(function (error) {
       console.log(error);
     });
 }
+
+function showBreedImage(index) {
+  document.getElementById
+}
+
 initialLoad()
-
-
 
 
 /**
@@ -77,7 +82,7 @@ initialLoad()
  * - For each object in the response array, create a new element for the carousel.
  *  - Append each of these new elements to the carousel.
  * 
- * - Use the other data you have been given to create an informational section within the infoDump element. // COME BACK TO FIGURE THIS OUT
+ * - Use the other data you have been given to create an informational section within the infoDump element. 
  * 
  *  - Be creative with how you create DOM elements and HTML.
  *  - Feel free to edit index.html and styles.css to suit your needs, but be careful!
@@ -85,8 +90,9 @@ initialLoad()
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
+
 breedSelect.addEventListener("change", (e) => {
-  // console.log(e.target.value)
+  console.log(e.target.value)
   fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${e.target.value}&api_key=${api_key}`)
     .then((res) => {
       return res.json()
@@ -94,7 +100,10 @@ breedSelect.addEventListener("change", (e) => {
     .then((data) => {
       // console.log(data)
       for (let i = 0; i < data.length; i++) {
-        const newCarousEls = document.createElement("newCarousEl")
+        console.log(data[i].url)
+        let images = data[i].url
+        const newCarousEls = document.createElement("img")
+        newCarousEls.setAttribute("src", images)
         carouselEls.append(newCarousEls)
       }
       return data
